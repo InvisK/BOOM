@@ -187,12 +187,12 @@ NTSTATUS RegisterCallback(
 					if (g_pSRA->pfn_MmIsAddressValid(targetAddress))
 					{
 
-						kirql = g_pSRA->pfn_KeRaiseIrqlToDpcLevel();
 						cr0 = __readcr0();
 						cr0 &= 0xfffffffffffeffff;
 						__writecr0(cr0);
 						_disable();
 
+						kirql = g_pSRA->pfn_KeRaiseIrqlToDpcLevel();
 						g_pSRA->pfn_RtlCopyMemory(targetAddress, Mapped, targetSize);
 						g_pSRA->pfn_KeLowerIrql(kirql);
 
@@ -200,7 +200,6 @@ NTSTATUS RegisterCallback(
 						cr0 |= 0x10000;
 						_enable();
 						__writecr0(cr0);
-						g_pSRA->pfn_KeLowerIrql(kirql);
 
 					}
 
